@@ -72,7 +72,6 @@ function setup(){
 function draw(){
     settings.rc = map(mouseX, 0, width, -1, 1);
     settings.ic = map(mouseY, 0, height, -1, 1);
-    console.log(settings.rc, settings.ic);
     generate();
 }
 
