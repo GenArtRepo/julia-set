@@ -1,6 +1,6 @@
 /*
 ** Julia Set
-* Cristian Rojas Cardenas, April 2022
+* Cristian Rojas Cardenas, May 2022
 * Algorithm based on the tutorial of Daniel Shiffman.
 * See the video here: 
 * https://www.youtube.com/watch?v=k6OeXGzRv0c
@@ -14,13 +14,17 @@ http://paulbourke.net/fractals/juliaset/
 let c1;
 let c2;
 
+let rc;
+let ic;
+
 
 let settings = { 
     Generate: function(){ init(); },
     max_iterations: 100,
     infinity_value: 16,
     gray_scale: false,
-    
+    rc: -0.70176,
+    ic: -0.3842,
 }
 
 function gui(){
@@ -30,6 +34,8 @@ function gui(){
     gui.add(settings,'Generate');
     gui.add(settings,'max_iterations', 10, 200).step(1);
     gui.add(settings,'infinity_value', 1, 100).step(1);
+    gui.add(settings,'rc').listen();
+    gui.add(settings,'ic').listen();
     gui.add(settings,'gray_scale');
 }
 
@@ -37,13 +43,13 @@ function gui(){
 function setup(){
     gui();
     createCanvas(720, 400);
-    pixelDensity(1);
-    init();
+    pixelDensity(1); 
+    generate();
 }
 
 
 
-function init(){
+function generate(){
     background(0);
 
     c1 = color(0, 0, 139);
@@ -61,17 +67,18 @@ function init(){
     updatePixels();
 }
 
-function draw(){}
+function draw(){
+    settings.rc = map(mouseX, 0, width, -1, 1);
+    settings.ic = map(mouseY, 0, height, -1, 1);
+    console.log(settings.rc, settings.ic);
+    generate();
+}
 
 function maldelbrot(i, j){
 
     // The grid reference is translated and scaled
-    var a = map(i, 0, width, -2.5, 1.5);
+    var a = map(i, 0, width, -1.5, 1.5);
     var b = map(j, 0, height, -1.5, 1.5);
-
-    // C takes the value of the current point
-    var ca = a;
-    var cb = b;
 
     // Iterations counter
     var n = 0;
@@ -83,13 +90,13 @@ function maldelbrot(i, j){
         var imag = 2*a*b;
 
         // Zn+1 = Zn + c
-        a = real - 0.70176;
-        b = imag - 0.3842;
+        a = real + settings.rc;
+        b = imag + settings.ic;
 
         // The process continues until it reachs the infinity value set as 16.
         // The area that points belong depends on how fast it reachs the infinity
         // value 
-        if (dist(a*a, b*b, 0, 0) > settings.infinity_value){
+        if ((a-settings.rc)**2 + (b-settings.ic)**2 > settings.infinity_value**2){
             break;
         }
         n++;
