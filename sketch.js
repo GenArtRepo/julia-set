@@ -4,10 +4,34 @@
 * Algorithm based on the tutorial of Daniel Shiffman.
 * See the video here: 
 * https://www.youtube.com/watch?v=k6OeXGzRv0c
-
-
-http://paulbourke.net/fractals/juliaset/
-
+* 
+* 
+* The algorithm operates under a grid of complex numbers, the width representing 
+* the real axis and the height the imaginary axis. The algorithm loops over the 
+* points in the grid to operate the Mandelbrot function with a preestablished c.
+* 
+*                   Z0 = 0
+*                   Zn+1 = Zn^2 + c
+* 
+* For instance:
+* 	                a = 0.70176 	b = 0.3842
+*                   Z0 = 0          c = a + i*b
+*                   Z1 = a + i*b                          
+*                   Z2 = (a^2 – b^2) +i*(2*a*b) + c		
+*                   Z3 = …..
+* 
+* For deeper information about the Mandelbrot function please check the Mandelbrot-Set 
+* example:
+* 
+*     https://codepen.io/crarojasca/pen/yLvybox
+* 
+* The Mandelbrot function generates a different pattern given the initial c value; the 
+* algorithm computes the pattern for the c value taken by the mouse coordinates. Some 
+* of the patterns that can be generated can be referred to here:
+* 
+*     http://paulbourke.net/fractals/juliaset/
+* 
+* 
 */
 
 
@@ -16,7 +40,6 @@ let c2;
 
 let rc;
 let ic;
-
 
 let settings = { 
     Generate: function(){ init(); },
@@ -39,7 +62,6 @@ function gui(){
     gui.add(settings,'gray_scale');
 }
 
-
 function setup(){
     gui();
     createCanvas(720, 400);
@@ -47,7 +69,12 @@ function setup(){
     generate();
 }
 
-
+function draw(){
+    settings.rc = map(mouseX, 0, width, -1, 1);
+    settings.ic = map(mouseY, 0, height, -1, 1);
+    console.log(settings.rc, settings.ic);
+    generate();
+}
 
 function generate(){
     background(0);
@@ -65,13 +92,6 @@ function generate(){
         }
     }
     updatePixels();
-}
-
-function draw(){
-    settings.rc = map(mouseX, 0, width, -1, 1);
-    settings.ic = map(mouseY, 0, height, -1, 1);
-    console.log(settings.rc, settings.ic);
-    generate();
 }
 
 function maldelbrot(i, j){
